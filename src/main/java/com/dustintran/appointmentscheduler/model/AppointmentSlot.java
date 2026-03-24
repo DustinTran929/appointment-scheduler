@@ -1,14 +1,19 @@
 package com.dustintran.appointmentscheduler.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 @Entity
-@Table(name="appointment_slots")
+@Table(
+    name="appointment_slots",
+    indexes = {
+        @Index(name = "idx_slot_status_start", columnList = "status,startTime")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class AppointmentSlot {
     public enum Type { INDIVIDUAL, GROUP}
     public enum Status { ACTIVE, CANCELLED}
+    public enum TargetScope { ENTIRE_SECTION, SPECIFIC_GROUP }
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -47,5 +53,15 @@ public class AppointmentSlot {
     @Column(nullable=false)
     private Status status;
 
-    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "section_id", nullable = false)
+    private CourseSection section;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TargetScope targetScope;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private StudentGroup group;
 }

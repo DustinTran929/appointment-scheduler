@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<div style="background:#1f2937; color:white; padding:16px 20px; margin-bottom:24px; border-radius:10px;">
+    <div style="font-size:24px; font-weight:bold;">Appointment Scheduler</div>
+    <div style="margin-top:6px; font-size:14px;">
+        <strong>Course:</strong> <span th:text="${courseName}">Software Engineering II</span>
+        &nbsp; | &nbsp;
+        <strong>Project:</strong> <span th:text="${projectName}">Appointment Scheduler</span>
+        &nbsp; | &nbsp;
+        <strong>User:</strong> <span th:text="${displayName}">Your Name</span>
+    </div>
+</div>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

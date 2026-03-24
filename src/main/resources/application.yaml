@@ -11,6 +11,16 @@ spring:
 
   thymeleaf:
     cache: false
+  web:
+    error:
+      include-message: always
+      include-binding-errors: always
+      include-stacktrace: always
     
 server:
   port: ${PORT:8080}
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.thymeleaf: DEBUG
+    org.hibernate: ERROR

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Groups</title>
+</head>
+<body style="margin:0; background:#f3f4f6; font-family:Arial, sans-serif; min-height:100vh;">
+
+    <div style="max-width:1100px; margin:30px auto; padding:0 20px;">
+
+        <div style="background:#1f2937; color:white; padding:16px 20px; margin-bottom:24px; border-radius:12px;">
+            <div style="font-size:24px; font-weight:bold;">Appointment Scheduler</div>
+            <div style="margin-top:6px; font-size:14px;">
+                <strong>Course:</strong> CSCI-P566
+                &nbsp; | &nbsp;
+                <strong>Project:</strong> Project I
+                &nbsp; | &nbsp;
+                <strong>User:</strong> <span th:text="${displayName}">Student</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <h1 style="margin:0 0 8px 0; font-size:30px; color:#111827;">Join a Group</h1>
+            <p style="margin:0; color:#6b7280;">Choose your group before booking group appointments.</p>
+        </div>
+
+        <div th:if="${student.group != null}"
+             style="background:white; padding:20px; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); margin-bottom:24px;">
+            <h2 style="margin-top:0; margin-bottom:12px; color:#111827;">Current Group</h2>
+            <p style="margin:0 0 16px 0; color:#374151; font-size:16px;">
+                You are currently in
+                <strong th:text="${student.group.name}"></strong>
+                under
+                <strong th:text="${student.section != null ? student.section.name : '-'}"></strong>.
+            </p>
+
+            <form th:action="@{/student/groups/leave}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit"
+                        style="background:#ffffff; color:#991b1b; border:1px solid #fca5a5; padding:10px 16px; border-radius:10px; font-weight:600; cursor:pointer;">
+                    Leave Group
+                </button>
+            </form>
+        </div>
+
+        <div th:each="entry : ${groupsBySection}" style="margin-bottom:28px;">
+            <h2 th:text="${entry.key.name}"
+                style="margin:0 0 14px 0; color:#111827; font-size:24px;">
+            </h2>
+
+            <div th:each="group : ${entry.value}"
+                 style="background:white; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); padding:18px 20px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+
+                <div>
+                    <div style="font-size:18px; font-weight:700; color:#111827;"
+                         th:text="${group.name}"></div>
+                    <div style="margin-top:6px; color:#6b7280;">
+                        <span th:text="${groupCounts.get(group.id)}"></span> students
+                    </div>
+                </div>
+
+                <form th:action="@{/student/groups/join}" method="post" style="margin:0;">
+                    <input type="hidden" name="groupId" th:value="${group.id}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <button type="submit"
+                            th:disabled="${student.group != null and student.group.id == group.id}"
+                            th:style="${student.group != null and student.group.id == group.id}
+                                ? 'background:#e5e7eb; color:#6b7280; border:none; padding:10px 16px; border-radius:10px; font-weight:600; cursor:not-allowed;'
+                                : 'background:#1f2937; color:white; border:none; padding:10px 16px; border-radius:10px; font-weight:600; cursor:pointer;'">
+                        <span th:text="${student.group != null and student.group.id == group.id ? 'Joined' : 'Join'}"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <a th:href="@{/student/slots}"
+           style="display:inline-block; text-decoration:none; background:#ffffff; color:#111827; border:1px solid #d1d5db; padding:10px 16px; border-radius:10px; font-weight:600;">
+            Back to Student Slots
+        </a>
+
+    </div>
+
+</body>
+</html>

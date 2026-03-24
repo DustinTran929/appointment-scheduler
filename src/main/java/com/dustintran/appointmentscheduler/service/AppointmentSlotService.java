@@ -39,6 +39,19 @@ public class AppointmentSlotService {
             throw new IllegalArgumentException("Start time must be in the future");
         }
 
+        if (slot.getTargetScope() == AppointmentSlot.TargetScope.SPECIFIC_GROUP) {
+            if (slot.getGroup() == null) {
+                throw new IllegalArgumentException("Group is requied for a group-targeted slot");
+            }
+
+            if (!slot.getGroup().getSection().getId().equals(slot.getSection().getId())) {
+                throw new IllegalArgumentException("Selected group does not belong to the selected section");
+            }
+        }
+        else {
+            slot.setGroup(null);
+        }
+
         if (slot.getType() == AppointmentSlot.Type.INDIVIDUAL) {
             slot.setCapacity(1);
         } else {
